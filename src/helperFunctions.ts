@@ -1,5 +1,8 @@
-export const obtenerIncidencia = (infectados: number, poblacion: number) =>{
+import {Ciudad} from './intefaces'
+
+export const obtenerIncidencia = (infectados: number, poblacion: number) =>  {
 
     const ratio = infectados / poblacion
-    return ratio * 1000000
+    return Math.floor(ratio * 100000)
 }
+

@@ -4,3 +4,8 @@ export interface Ciudad {
     poblacion: number
     region?: string
 }
+
+export interface CovidRateRequest {
+    covidCasos: number
+    ciudad: string
+}
