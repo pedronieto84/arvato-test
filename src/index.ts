@@ -1,7 +1,7 @@
 
 import express, {Request, Response} from 'express'
 import {Ciudad, CovidRateRequest}  from './intefaces'
-import { obtenerIncidencia, validDate, obtenerIncidenciaPorRangos } from './helperFunctions';
+import { obtenerIncidencia, validDate, obtenerIncidenciaPorRangos, getDatesNumber, getTotalPopulation } from './helperFunctions';
 
 const app = express()
 
@@ -65,11 +65,16 @@ app.get("/covid-rate-range", (req: Request, res: Response ):void => {
     const area = req.query.city || req.query.region
     const from = req.query.from
     const until = req.query.until
-    if(area && ( from || until )){
+    const infected = req.query.infected as string | undefined
+
+    if(area && ( from || until ) && infected ){
         // Check if days format is the specified.
         const firstParam = (from || until) as string
         if(validDate(firstParam, until as string)){
-            res.send( )
+            const days = getDatesNumber(from as string | undefined, until as string | undefined)
+            const poblacion = getTotalPopulation( cities, area as string )
+            const covidResp = obtenerIncidenciaPorRangos( parseInt(infected), poblacion, days );
+            res.send(covidResp) 
             
         }else{
             res.send({error: "Dates have wrong format, format must be DD-MM-YYYY"})
