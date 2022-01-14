@@ -1,8 +1,12 @@
 
 import express, {Request, Response} from 'express'
 import {Ciudad}  from './intefaces'
-
+import { obtenerIncidencia } from './helperFunctions';
 const app = express()
+
+
+const ratio = obtenerIncidencia(100, 100000)
+console.log('ratio', ratio);
 
 // Database Setup
 
