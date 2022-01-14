@@ -8,7 +8,6 @@ export const obtenerIncidencia = (infectados: number, poblacion: number) =>  {
     return Math.floor(ratio * 100000)
 }
 
-
 export const validDate = (from:string, until?:string | undefined): boolean => {
     if(from && until) {
         return isValidDate(from) && isValidDate(until)
@@ -18,7 +17,6 @@ export const validDate = (from:string, until?:string | undefined): boolean => {
 }
 
 export const obtenerIncidenciaPorRangos = ( infectados: number, poblacion: number, fechas: number ): CovidResponseRate =>  {
-
     let responseRate: CovidResponseRate
     const ratio = obtenerIncidencia(infectados, poblacion)
     if( fechas > 1){
@@ -41,15 +39,15 @@ export const getDatesNumber = ( from: string | undefined, until: string | undefi
             return 1
         }else{
             const start = moment(from, 'DD-MM-YYYY')
-            console.log('start',start)
             const end = moment(until, 'DD-MM-YYYY')
             const totalDays = end.diff(start,'days')
-            console.log('total days', totalDays)
             return Math.abs(totalDays)
         }
 }
 
 export const getTotalPopulation = (cities: Ciudad [], areaOrRegion: string) =>{
+
+    // Method that returns the total population either from a certain city or from a whole region
 
     const findCityOrArea = cities.some((ciudad) =>{
         return ( ciudad.nombre === areaOrRegion  ) || ( ciudad.region === areaOrRegion)

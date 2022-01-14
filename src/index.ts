@@ -5,15 +5,9 @@ import { obtenerIncidencia, validDate, obtenerIncidenciaPorRangos, getDatesNumbe
 
 const app = express()
 
-
+// Data
 const cities: Ciudad[] = []
 const citiesSet = new Set()
-
-// Mockup Data
-
-cities.push({ nombre: "Terrassa", poblacion: 210000, region:"Cataluna", pais:"España"})
-cities.push({ nombre: "Sabadell", poblacion: 210000, region:"Cataluna", pais:"España"})
-citiesSet.add("Terrassa")
 
 app.use(express.json());
 app.get("/", (req: Request, res: Response):void => {
@@ -38,12 +32,12 @@ app.post("/create-city", (req: Request, res: Response ):void => {
 })
 
 
-// Endpoint to check covid-Rate for certain day. Requirement 3.3.
+// Requirement 3.3. Endpoint to check covid-Rate for certain day. 
+
 app.post("/covid-rate", (req: Request, res: Response ):void => {
     const covidRateRequest = req.body as CovidRateRequest | undefined
     if(covidRateRequest?.ciudad){
         // check if we have the city in our list
-        console.log('set', citiesSet.values())
         if(! citiesSet.has(covidRateRequest.ciudad)){
             res.send({ error: 'City does not exist on our list' } )
         }else{
@@ -52,7 +46,7 @@ app.post("/covid-rate", (req: Request, res: Response ):void => {
             })
             // I know for certain that city is on the array so I cast the return to number to avoid the "undefined safecheck"
             const poblacion = ciudadObject?.poblacion as number
-            console.log('poblacion', poblacion)
+           
             const incidencia = obtenerIncidencia(covidRateRequest.covidCasos, poblacion );
             res.send({ incidencia })
         }
@@ -61,8 +55,10 @@ app.post("/covid-rate", (req: Request, res: Response ):void => {
     }
 })
 
+// Requirement 3.4 and 3.5. Endpoint that returns covid rate of a certain city/region from a certain day or a range of days
+
 app.get("/covid-rate-range", (req: Request, res: Response ):void => {
- 
+    
     const area = req.query.city || req.query.region
     const from = req.query.from
     const until = req.query.until
@@ -73,9 +69,7 @@ app.get("/covid-rate-range", (req: Request, res: Response ):void => {
         const firstParam = (from || until) as string
         if(validDate(firstParam, until as string)){
             const days = getDatesNumber(from as string | undefined, until as string | undefined) as number
-            console.log('days', days)
             const poblacion = getTotalPopulation( cities, area as string )
-            console.log('poblacion', poblacion)
             const covidResp = obtenerIncidenciaPorRangos( parseInt(infected), poblacion, days );
             res.send(covidResp) 
             
