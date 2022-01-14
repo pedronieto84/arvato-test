@@ -11,7 +11,8 @@ const citiesSet = new Set()
 
 // Mockup Data
 
-cities.push({ nombre: "Terrassa", poblacion: 210000, region:"Cataluña", pais:"España"})
+cities.push({ nombre: "Terrassa", poblacion: 210000, region:"Cataluna", pais:"España"})
+cities.push({ nombre: "Sabadell", poblacion: 210000, region:"Cataluna", pais:"España"})
 citiesSet.add("Terrassa")
 
 app.use(express.json());
@@ -71,8 +72,10 @@ app.get("/covid-rate-range", (req: Request, res: Response ):void => {
         // Check if days format is the specified.
         const firstParam = (from || until) as string
         if(validDate(firstParam, until as string)){
-            const days = getDatesNumber(from as string | undefined, until as string | undefined)
+            const days = getDatesNumber(from as string | undefined, until as string | undefined) as number
+            console.log('days', days)
             const poblacion = getTotalPopulation( cities, area as string )
+            console.log('poblacion', poblacion)
             const covidResp = obtenerIncidenciaPorRangos( parseInt(infected), poblacion, days );
             res.send(covidResp) 
             
@@ -82,7 +85,7 @@ app.get("/covid-rate-range", (req: Request, res: Response ):void => {
 
 
     }else{
-        res.send({error: "Incorrect format request, please we need it like this ?city=London&from=DD-MM-YYYY&until=DD-MM-YYYY"})
+        res.send({error: "Incorrect format request, please check documentation"})
     }
     
 

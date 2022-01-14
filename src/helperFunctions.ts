@@ -40,11 +40,12 @@ export const getDatesNumber = ( from: string | undefined, until: string | undefi
         if( (from === undefined)  || ( until === undefined)){
             return 1
         }else{
-            const start = moment(from)
-            const end = moment(until)
-            const totalDays = start.diff(end,'days')
+            const start = moment(from, 'DD-MM-YYYY')
+            console.log('start',start)
+            const end = moment(until, 'DD-MM-YYYY')
+            const totalDays = end.diff(start,'days')
             console.log('total days', totalDays)
-            return totalDays
+            return Math.abs(totalDays)
         }
 }
 
@@ -63,7 +64,7 @@ export const getTotalPopulation = (cities: Ciudad [], areaOrRegion: string) =>{
                 return
             }
         })
-        return 0
+        return population
     }else{
         return 0
     }
