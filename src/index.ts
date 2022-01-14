@@ -4,6 +4,15 @@ import {Ciudad}  from './intefaces'
 
 const app = express()
 
+// Database Setup
+
+const DataStore = require("nedb"),
+  db = new DataStore({
+    filename: __dirname + "/data/example.dat",
+    autoload: true,
+  });
+
+
 app.use(express.json());
 app.get("/", (req: Request, res: Response):void => {
     
@@ -18,9 +27,19 @@ app.get("/", (req: Request, res: Response):void => {
 
 app.post("/create-city", (req: Request, res: Response ):void => {
 
-    const ciudad = req.body;
-    console.log('ciudad', ciudad);
-    res.json(ciudad)
+  const ciudad: Ciudad = req.body;
+  if (ciudad) {
+    db.insert(ciudad, (err:any, response:any) => {
+      if (err) {
+        console.log("error", err);
+        process.exit(3);
+      }
+      console.log("user creat", response);
+    });
+  } else {
+    res.send("no has definit cap user");
+  }
+  res.json(req.body); // res.json es com res.send pero especificant que el content type es JSON a la metadata
     
 })
 
