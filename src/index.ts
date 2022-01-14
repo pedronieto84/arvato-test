@@ -34,20 +34,21 @@ app.post("/create-city", (req: Request, res: Response ):void => {
 
 // Requirement 3.3. Endpoint to check covid-Rate for certain day. 
 
-app.post("/covid-rate", (req: Request, res: Response ):void => {
-    const covidRateRequest = req.body as CovidRateRequest | undefined
-    if(covidRateRequest?.ciudad){
+app.get("/covid-rate", (req: Request, res: Response ):void => {
+    const city = req.query.city
+    const covidCasos = req.query.cases as string
+    if(city && covidCasos){
         // check if we have the city in our list
-        if(! citiesSet.has(covidRateRequest.ciudad)){
+        if(! citiesSet.has(city)){
             res.send({ error: 'City does not exist on our list' } )
         }else{
             const ciudadObject = cities.find((ciudad: Ciudad)=>{
-                return ciudad.nombre === covidRateRequest.ciudad
+                return ciudad.nombre === city
             })
             // I know for certain that city is on the array so I cast the return to number to avoid the "undefined safecheck"
             const poblacion = ciudadObject?.poblacion as number
            
-            const incidencia = obtenerIncidencia(covidRateRequest.covidCasos, poblacion );
+            const incidencia = obtenerIncidencia(parseInt(covidCasos), poblacion );
             res.send({ incidencia })
         }
     }else{
@@ -85,7 +86,7 @@ app.get("/covid-rate-range", (req: Request, res: Response ):void => {
 
 })
 
-app.listen("3002", ():void=> {
+app.listen("3000", ():void=> {
     console.log('server runing');
 })
  
