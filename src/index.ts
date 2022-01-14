@@ -1,7 +1,8 @@
 
 import express, {Request, Response} from 'express'
 import {Ciudad, CovidRateRequest}  from './intefaces'
-import { obtenerIncidencia } from './helperFunctions';
+import { obtenerIncidencia, validDate } from './helperFunctions';
+
 const app = express()
 
 
@@ -18,28 +19,26 @@ app.get("/", (req: Request, res: Response):void => {
 })
 
 
-
 // Endpoint to create cities. Requeriment 3.2.
 
 app.post("/create-city", (req: Request, res: Response ):void => {
   const ciudad: Ciudad = req.body;
   if (ciudad) {
     if(citiesSet.has(ciudad.nombre)){
-        res.send({message:"City already exists"}) 
+        res.send({ message: "City already exists"}) 
     }else{
         cities.push(ciudad);
         citiesSet.add(ciudad.nombre)
-        res.send({message:"Successfully created"}) 
+        res.send({ message: "Successfully created"}) 
     }
   } else {
-    res.send({message:"You need to specify a city"});
+    res.send({ message:"You need to specify a city" });
   }
 })
 
 
 // Endpoint to check covid-Rate for certain day. Requirement 3.3.
 app.post("/covid-rate", (req: Request, res: Response ):void => {
-
     const covidRateRequest = req.body as CovidRateRequest | undefined
     if(covidRateRequest?.ciudad){
         // check if we have the city in our list
@@ -56,10 +55,30 @@ app.post("/covid-rate", (req: Request, res: Response ):void => {
             const incidencia = obtenerIncidencia(covidRateRequest.covidCasos, poblacion );
             res.send({ incidencia })
         }
-        
     }else{
         res.send({message:"Incorrect format, please check documentation about the specified format required."})
     }
+})
+
+app.get("/covid-rate-range", (req: Request, res: Response ):void => {
+ 
+    const area = req.query.city || req.query.region
+    const from = req.query.from
+    const until = req.query.until
+    if(area && ( from || until )){
+        // Check if days format is the specified.
+        const firstParam = (from || until) as string
+        if(validDate(firstParam, until as string)){
+
+        }else{
+            res.send({error: "Dates have wrong format, format must be DD-MM-YYYY"})
+        }
+
+
+    }else{
+        res.send({error: "Incorrect format request, please we need it like this ?city=London&from=DD-MM-YYYY&until=DD-MM-YYYY"})
+    }
+    
 
 })
 
