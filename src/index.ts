@@ -5,17 +5,7 @@ import { obtenerIncidencia } from './helperFunctions';
 const app = express()
 
 
-const ratio = obtenerIncidencia(100, 100000)
-console.log('ratio', ratio);
-
-// Database Setup
-
-const DataStore = require("nedb"),
-  db = new DataStore({
-    filename: __dirname + "/data/example.dat",
-    autoload: true,
-  });
-
+const cityesArray: Ciudad[] = []
 
 app.use(express.json());
 app.get("/", (req: Request, res: Response):void => {
@@ -29,22 +19,24 @@ app.get("/", (req: Request, res: Response):void => {
         res.json(ciudadPrueba)
 })
 
+// Endpoint to create cities. Requeriment 3.2.
 app.post("/create-city", (req: Request, res: Response ):void => {
-
   const ciudad: Ciudad = req.body;
   if (ciudad) {
-    db.insert(ciudad, (err:any, response:any) => {
-      if (err) {
-        console.log("error", err);
-        process.exit(3);
-      }
-      console.log("user creat", response);
-    });
+    cityesArray.push(ciudad)
+    res.send({message:"Successfully created"}) 
   } else {
-    res.send("no has definit cap user");
+    res.send({message:"You need to specify a city"});
   }
-  res.json(req.body); // res.json es com res.send pero especificant que el content type es JSON a la metadata
-    
+  
+})
+
+// Endpoint to check covid-Rate. Requirement 3.3.
+
+app.get("/covid-rate", (req: Request, res: Response ):void => {
+
+    //const covidRateRequest: CovidRequest = req.body
+
 })
 
 app.listen("3002", ():void=> {
