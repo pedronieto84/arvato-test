@@ -1,7 +1,7 @@
 
 import express, {Request, Response} from 'express'
 import {Ciudad, CovidRateRequest}  from './intefaces'
-import { obtenerIncidencia, validDate } from './helperFunctions';
+import { obtenerIncidencia, validDate, obtenerIncidenciaPorRangos } from './helperFunctions';
 
 const app = express()
 
@@ -69,7 +69,8 @@ app.get("/covid-rate-range", (req: Request, res: Response ):void => {
         // Check if days format is the specified.
         const firstParam = (from || until) as string
         if(validDate(firstParam, until as string)){
-
+            res.send( )
+            
         }else{
             res.send({error: "Dates have wrong format, format must be DD-MM-YYYY"})
         }
